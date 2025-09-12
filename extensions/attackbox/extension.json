@@ -11,6 +11,6 @@
         "NHA",
         "SCCM"
     ],
-    "impact": "none"
+    "impact": "adds a kali machine to the network"
 }
 

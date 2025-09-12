@@ -32,13 +32,6 @@
           - ldap-utils
         state: present
 
-    - name: "Set permissions for tools directory"
-      file:
-        path: /opt
-        owner: kali
-        group: kali
-        recurse: yes
-
     - name: "Enable SSH service"
       systemd:
         name: ssh
