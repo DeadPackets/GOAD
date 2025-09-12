@@ -1,0 +1,11 @@
+boxes.append(
+    { :name => "{{lab_name}}-ATTACKBOX",
+      :ip => "{{ip_range}}.100",
+      :box => "kalilinux/rolling",
+      :os => "linux",
+      :cpus => 2,
+      :mem => 4096,
+      :forwarded_port => [ {:guest => 22, :host => 2222, :id => "ssh"} ]
+    }
+)
+

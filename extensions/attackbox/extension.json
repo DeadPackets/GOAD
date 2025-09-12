@@ -1,0 +1,16 @@
+{
+    "name": "attackbox",
+    "description": "Add a Kali Linux attackbox with default SSH credentials for exploitation activities",
+    "machines": [
+        "attackbox (kali linux)"
+    ],
+    "compatibility": [
+        "GOAD",
+        "GOAD-Light",
+        "GOAD-Mini",
+        "NHA",
+        "SCCM"
+    ],
+    "impact": "none"
+}
+
