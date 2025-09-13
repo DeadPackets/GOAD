@@ -4,34 +4,6 @@
   hosts: attackbox
   become: yes
   tasks:
-    - name: "Update package cache"
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-
-    - name: "Upgrade all packages"
-      apt:
-        upgrade: dist
-        autoremove: yes
-        autoclean: yes
-
-    - name: "Install additional penetration testing tools"
-      apt:
-        name:
-          - nmap
-          - python3-pip
-          - git
-          - curl
-          - wget
-          - vim
-          - tmux
-          - screen
-          - net-tools
-          - dnsutils
-          - tcpdump
-          - ldap-utils
-        state: present
-
     - name: "Enable SSH service"
       systemd:
         name: ssh
@@ -58,6 +30,10 @@
         groups: sudo
         append: yes
 
+    - name: Set zsh as default shell for kali user
+      user:
+        name: kali
+        shell: /usr/bin/zsh
   handlers:
     - name: restart ssh
       systemd:
