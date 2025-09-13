@@ -1,0 +1,63 @@
+---
+# Ansible playbook for attackbox provisioning
+- name: "Setup LLM-AD-Defense Server"
+  hosts: llmdefense
+  become: yes
+  tasks:
+    - name: "Enable SSH service"
+      systemd:
+        name: ssh
+        enabled: yes
+        state: started
+
+    - name: "Configure SSH to allow password authentication"
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication yes'
+        state: present
+      notify: restart ssh
+
+    - name: "Set ubuntu user password"
+      user:
+        name: ubuntu
+        password: "{{ 'ubuntu' | password_hash('sha512') }}"
+        state: present
+
+    - name: "Add ubuntu user to sudo group"
+      user:
+        name: ubuntu
+        groups: sudo
+        append: yes
+
+    - name: "Install docker with easy_install script"
+      shell: |
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh
+      args:
+        creates: /usr/bin/docker
+
+    - name: "Add ubuntu user to docker group"
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: "Copy LLM-AD-Defense files"
+      copy:
+        src: ./files/LLM-AD-Defense
+        dest: /home/ubuntu/LLM-AD-Defense
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: "Build and run LLM-AD-Defense Docker container"
+      shell: |
+        cd /home/ubuntu/LLM-AD-Defense
+        docker compose up --build -d
+
+  handlers:
+    - name: restart ssh
+      systemd:
+        name: ssh
+        state: restarted

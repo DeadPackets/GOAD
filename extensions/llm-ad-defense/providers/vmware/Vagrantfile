@@ -1,0 +1,11 @@
+boxes.append(
+    { :name => "{{lab_name}}-LLMDEFENSE",
+      :ip => "{{ip_range}}.200",
+      :box => "bento/ubuntu-22.04",
+      :os => "linux",
+      :cpus => 2,
+      :mem => 4096,
+      :forwarded_port => [ {:guest => 22, :host => 2222, :id => "ssh"} ]
+    }
+)
+

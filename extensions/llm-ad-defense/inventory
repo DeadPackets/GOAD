@@ -1,0 +1,11 @@
+[default]
+wazuh ansible_host={{ip_range}}.51 ansible_connection=ssh ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+llmdefense ansible_host={{ip_range}}.200 ansible_connection=ssh ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[extensions]
+wazuh
+llmdefense
+
+; Recipe associations -------------------
+[wazuh_server]
+wazuh

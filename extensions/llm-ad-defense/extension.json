@@ -1,0 +1,13 @@
+{
+    "name": "llm-ad-defense",
+    "description": "Add the LLM-AD-Defense extension to the GOAD setup",
+    "machines": [
+        "LLMDEFENSE"
+    ],
+    "compatibility": [
+        "GOAD",
+        "GOAD-Light",
+        "GOAD-Mini"
+    ],
+    "impact": "Adds the LLM-AD-Defense extension and active defense capabilities to the GOAD setup."
+}

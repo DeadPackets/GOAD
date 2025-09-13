@@ -1,0 +1,6 @@
+[submodule "extensions/llm-ad-defense/data/LLM-AD-Defense"]
+	path = extensions/llm-ad-defense/data/LLM-AD-Defense
+	url = git@github.com:DeadPackets/LLM-AD-Defense.git
+[submodule "extensions/llm-ad-defense/ansible/files/LLM-AD-Defense"]
+	path = extensions/llm-ad-defense/ansible/files/LLM-AD-Defense
+	url = git@github.com:DeadPackets/LLM-AD-Defense.git
