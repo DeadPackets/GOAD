@@ -51,6 +51,7 @@
         group: ubuntu
         mode: '0755'
         remote_src: no
+        force: yes
 
     - name: "Build and run LLM-AD-Defense Docker container"
       shell: |
