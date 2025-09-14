@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Install git and python3
-sudo apt-get update
-sudo apt-get install -y git python3-venv python3-pip git sshpass
+sudo DEBIAN_FRONTEND=noninteractive apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git python3-venv python3-pip git sshpass
 
 # Setup SSH keys (echo hardcoded with cat EOF)
 cat << 'EOF' > /home/vagrant/.ssh/id_rsa
