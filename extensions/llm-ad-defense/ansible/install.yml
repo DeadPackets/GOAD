@@ -46,7 +46,7 @@
     - name: "Copy LLM-AD-Defense files"
       copy:
         src: ./files/LLM-AD-Defense
-        dest: /home/ubuntu/LLM-AD-Defense
+        dest: /home/ubuntu
         owner: ubuntu
         group: ubuntu
         mode: '0755'
