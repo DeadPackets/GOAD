@@ -80,10 +80,30 @@
         insertbefore: "</ossec_config>"
         block: |
           <integration>
-            <name>custom-integration</name>
+            <name>custom-llm-ad-defense</name>
             <hook_url>http://192.168.56.200:8080/receive-alert</hook_url>
             <alert_format>json</alert_format>
           </integration>
+
+    - name: "Copy custom integration ./files/custom-llm-ad-defense"
+      copy:
+        src: ./files/custom-llm-ad-defense
+        dest: /var/ossec/integrations/custom-llm-ad-defense
+        owner: root
+        group: wazuh
+        mode: '0750'
+        remote_src: no
+        force: yes
+
+    - name: "Copy custom integration ./files/custom-llm-ad-defense.py"
+      copy:
+        src: ./files/custom-llm-ad-defense.py
+        dest: /var/ossec/integrations/custom-llm-ad-defense.py
+        owner: root
+        group: wazuh
+        mode: '0750'
+        remote_src: no
+        force: yes
 
     - name: "Restart Wazuh manager service"
       systemd:
