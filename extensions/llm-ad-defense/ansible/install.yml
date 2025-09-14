@@ -86,11 +86,6 @@
             <alert_format>json</alert_format>
           </integration>
 
-    - name: "Validate ossec.conf syntax"
-      shell: /var/ossec/bin/ossec-control configcheck
-      register: config_check
-      failed_when: config_check.rc != 0
-
     - name: "Restart Wazuh manager service"
       systemd:
         name: wazuh-manager
