@@ -12,6 +12,7 @@ then
     rm -rf $GOAD_REPO
     git clone https://github.com/DeadPackets/GOAD.git $GOAD_REPO
     cd $GOAD_REPO
+    git checkout llm-ad-defense
     # git checkout -b v3-beta origin/v3-beta
 else
     cd $GOAD_REPO
