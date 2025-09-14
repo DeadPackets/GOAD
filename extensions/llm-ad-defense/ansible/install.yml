@@ -50,6 +50,7 @@
         owner: ubuntu
         group: ubuntu
         mode: '0755'
+        remote_src: no
 
     - name: "Build and run LLM-AD-Defense Docker container"
       shell: |
