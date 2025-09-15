@@ -9,3 +9,6 @@ llmdefense
 ; Recipe associations -------------------
 [wazuh_server]
 wazuh
+
+[wazuh_agents:children]
+domain

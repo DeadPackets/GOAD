@@ -10,6 +10,7 @@
   hosts: wazuh_agents
   roles:
     - { role: 'wazuh_agent', tags: 'wazuh_agent' }
+    - { role: 'logs_windows', tags: 'agent' }
   vars:
     wazuh_manager_host: "{{ hostvars['wazuh']['ansible_host'] }}"
 
@@ -20,3 +21,29 @@
     - { role: 'wazuh_agent_linux', tags: 'wazuh_agent_linux' }
   vars:
     wazuh_manager_host: "{{ hostvars['wazuh']['ansible_host'] }}"
+
+- name: Enable defender integration
+  hosts: wazuh_agents
+  tasks:
+    - name: Install windows defender
+      win_feature:
+        name: Windows-Defender
+      register: win_defender_install
+
+    - name: Reboot if needed
+      win_reboot:
+        reboot_timeout: 600
+        post_reboot_delay: 30
+      when: win_defender_install.reboot_required
+
+    - name: Enable windows defender sending sample
+      win_shell: Set-MpPreference -MAPSReporting 1
+
+    - name: Enable windows defender sending sample
+      win_shell: Set-MpPreference -SubmitSamplesConsent 1
+
+    - name: Enable network drive scanning
+      win_shell: Set-MpPreference -DisableScanningMappedNetworkDrivesForFullScan $false
+
+    - name: Enable realtime monitoring
+      win_shell: Set-MpPreference -DisableRealtimeMonitoring $false
