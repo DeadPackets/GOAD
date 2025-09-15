@@ -51,26 +51,18 @@
         - '    <location>Microsoft-Windows-Windows Defender/Operational</location>'
         - '    <log_format>eventchannel</log_format>'
         - '  </localfile>'
-        - ''
         - '  <!-- Sysmon Logs -->'
         - '  <localfile>'
         - '    <location>Microsoft-Windows-Sysmon/Operational</location>'
         - '    <log_format>eventchannel</log_format>'
         - '  </localfile>'
-        - ''
       notify: restart wazuh agent
 
     - name: Restart Wazuh Agent service to apply configuration changes
       win_service:
         name: WazuhSvc
         state: restarted
-      when: ossec_config_changed is defined
 
-  handlers:
-    - name: restart wazuh agent
-      win_service:
-        name: WazuhSvc
-        state: restarted
   vars:
     wazuh_manager_host: "{{ hostvars['wazuh']['ansible_host'] }}"
 
