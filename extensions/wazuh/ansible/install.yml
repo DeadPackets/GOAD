@@ -6,21 +6,19 @@
   roles:
     - { role: 'wazuh_manager', tags: 'wazuh_manager' }
   tasks:
-    - name: Install python3-lxml
-      apt:
-        name: python3-lxml
-        state: present
-        update_cache: yes
     - name: Disable vulnerability-detection in ossec.conf
-      community.general.xml:
+      shell:
+        sed -i '/<vulnerability-detector>/,/<\/vulnerability-detector>/d' /var/ossec/etc/ossec.conf
+    - name: Add vulnerability-detection section set to no in ossec.conf
+      blockinfile:
         path: /var/ossec/etc/ossec.conf
-        xpath: /ossec_config/vulnerability-detection/enabled
-        value: 'no'
-    - name: Disable vulnerability-detection index-status in ossec.conf
-      community.general.xml:
-        path: /var/ossec/etc/ossec.conf
-        xpath: /ossec_config/vulnerability-detection/index-status
-        value: 'no'
+        insertafter: '<ossec_config>'
+        block: |
+            <vulnerability-detector>
+                <enabled>no</enabled>
+            </vulnerability-detector>
+        marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+        state: present
 
 - name: Preconfigure Wazuh Agent Machines
   hosts: wazuh_agents
