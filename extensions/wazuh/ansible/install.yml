@@ -34,45 +34,45 @@
   roles:
     - { role: 'logs_windows', tags: 'agent' }
 
-- name: Install Wazuh Agent
-  hosts: wazuh_agents
-  roles:
-    - { role: 'wazuh_agent', tags: 'wazuh_agent' }
-  tasks:
-    - name: Add MSDefender and Sysmon collection rules to agent ossec.conf
-      win_lineinfile:
-        path: 'C:\Program Files (x86)\ossec-agent\ossec.conf'
-        line: "{{ item }}"
-        insertafter: '<ossec_config>'
-        state: present
-      loop:
-        - '  <!-- Microsoft Defender Logs -->'
-        - '  <localfile>'
-        - '    <location>Microsoft-Windows-Windows Defender/Operational</location>'
-        - '    <log_format>eventchannel</log_format>'
-        - '  </localfile>'
-        - ''
-        - '  <!-- Sysmon Logs -->'
-        - '  <localfile>'
-        - '    <location>Microsoft-Windows-Sysmon/Operational</location>'
-        - '    <log_format>eventchannel</log_format>'
-        - '  </localfile>'
-        - ''
-      notify: restart wazuh agent
-
-    - name: Restart Wazuh Agent service to apply configuration changes
-      win_service:
-        name: WazuhSvc
-        state: restarted
-      when: ossec_config_changed is defined
-
-  handlers:
-    - name: restart wazuh agent
-      win_service:
-        name: WazuhSvc
-        state: restarted
-  vars:
-    wazuh_manager_host: "{{ hostvars['wazuh']['ansible_host'] }}"
+#- name: Install Wazuh Agent
+#  hosts: wazuh_agents
+#  roles:
+#    - { role: 'wazuh_agent', tags: 'wazuh_agent' }
+#  tasks:
+#    - name: Add MSDefender and Sysmon collection rules to agent ossec.conf
+#      win_lineinfile:
+#        path: 'C:\Program Files (x86)\ossec-agent\ossec.conf'
+#        line: "{{ item }}"
+#        insertafter: '<ossec_config>'
+#        state: present
+#      loop:
+#        - '  <!-- Microsoft Defender Logs -->'
+#        - '  <localfile>'
+#        - '    <location>Microsoft-Windows-Windows Defender/Operational</location>'
+#        - '    <log_format>eventchannel</log_format>'
+#        - '  </localfile>'
+#        - ''
+#        - '  <!-- Sysmon Logs -->'
+#        - '  <localfile>'
+#        - '    <location>Microsoft-Windows-Sysmon/Operational</location>'
+#        - '    <log_format>eventchannel</log_format>'
+#        - '  </localfile>'
+#        - ''
+#      notify: restart wazuh agent
+#
+#    - name: Restart Wazuh Agent service to apply configuration changes
+#      win_service:
+#        name: WazuhSvc
+#        state: restarted
+#      when: ossec_config_changed is defined
+#
+#  handlers:
+#    - name: restart wazuh agent
+#      win_service:
+#        name: WazuhSvc
+#        state: restarted
+#  vars:
+#    wazuh_manager_host: "{{ hostvars['wazuh']['ansible_host'] }}"
 
 - name: Install Wazuh Agent
   hosts: wazuh_agents_linux
