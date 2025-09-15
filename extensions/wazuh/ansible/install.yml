@@ -40,22 +40,22 @@
     - { role: 'wazuh_agent', tags: 'wazuh_agent' }
   tasks:
     - name: Add MSDefender and Sysmon collection rules to agent ossec.conf
-      win_lineinfile:
+      win_blockinfile:
         path: 'C:\Program Files (x86)\ossec-agent\ossec.conf'
-        line: "{{ item }}"
         insertafter: '<ossec_config>'
+        block: |
+          <!-- Microsoft Defender Logs -->
+          <localfile>
+            <location>Microsoft-Windows-Windows Defender/Operational</location>
+            <log_format>eventchannel</log_format>
+          </localfile>
+          <!-- Sysmon Logs -->
+          <localfile>
+            <location>Microsoft-Windows-Sysmon/Operational</location>
+            <log_format>eventchannel</log_format>
+          </localfile>
+        marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
         state: present
-      loop:
-        - '  <!-- Microsoft Defender Logs -->'
-        - '  <localfile>'
-        - '    <location>Microsoft-Windows-Windows Defender/Operational</location>'
-        - '    <log_format>eventchannel</log_format>'
-        - '  </localfile>'
-        - '  <!-- Sysmon Logs -->'
-        - '  <localfile>'
-        - '    <location>Microsoft-Windows-Sysmon/Operational</location>'
-        - '    <log_format>eventchannel</log_format>'
-        - '  </localfile>'
 
     - name: Restart Wazuh Agent service to apply configuration changes
       win_service:

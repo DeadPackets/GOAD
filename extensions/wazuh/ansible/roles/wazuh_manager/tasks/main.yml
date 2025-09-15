@@ -36,22 +36,8 @@
     state: started
     enabled: yes
 
-# check socfotress folder to avoid reinstall if already installed
-- name: Get stats of ossec directory
-  ansible.builtin.stat:
-    path: /var/ossec
-  register: ossec_folder
-
-- name: Download SOCFORTRESS Wazuh rules script
-  copy:
-    src: wazuh_socfortress_rules.sh
-    dest: /opt/wazuh/wazuh_socfortress_rules.sh
-    mode: "0755"  # Ensure the script is executable
-  when: not ossec_folder.stat.exists
-
 - name: Run SOCFORTRESS Wazuh rules script
-  shell: sudo bash /opt/wazuh/wazuh_socfortress_rules.sh
-  when: not ossec_folder.stat.exists
+  shell: curl -so ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh && yes | bash ~/wazuh_socfortress_rules.sh
 
 - name: Extract username and password
   shell: "grep -E 'User:|Password:' /opt/wazuh/wazuh-install-output.txt | awk '{print $NF}'"
