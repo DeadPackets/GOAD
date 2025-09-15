@@ -6,6 +6,11 @@
   roles:
     - { role: 'wazuh_manager', tags: 'wazuh_manager' }
   tasks:
+    - name: Install python3-lxml
+      apt:
+        name: python3-lxml
+        state: present
+        update_cache: yes
     - name: Disable vulnerability-detection in ossec.conf
       community.general.xml:
         path: /var/ossec/etc/ossec.conf
