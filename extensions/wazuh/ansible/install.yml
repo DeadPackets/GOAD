@@ -5,6 +5,17 @@
   become: yes
   roles:
     - { role: 'wazuh_manager', tags: 'wazuh_manager' }
+  tasks:
+    - name: Disable vulnerability-detection in ossec.conf
+      community.general.xml:
+        path: /var/ossec/etc/ossec.conf
+        xpath: /ossec_config/vulnerability-detection/enabled
+        value: 'no'
+    - name: Disable vulnerability-detection index-status in ossec.conf
+      community.general.xml:
+        path: /var/ossec/etc/ossec.conf
+        xpath: /ossec_config/vulnerability-detection/index-status
+        value: 'no'
 
 - name: Preconfigure Wazuh Agent Machines
   hosts: wazuh_agents
@@ -20,14 +31,14 @@
         post_reboot_delay: 30
       when: win_defender_install.reboot_required
 
-    - name: Enable windows defender sending sample
-      win_shell: Set-MpPreference -MAPSReporting 1
+    - name: Disable windows defender sending sample
+      win_shell: Set-MpPreference -MAPSReporting 0
 
-    - name: Enable windows defender sending sample
-      win_shell: Set-MpPreference -SubmitSamplesConsent 1
+    - name: Disable windows defender sending sample
+      win_shell: Set-MpPreference -SubmitSamplesConsent 2
 
-    - name: Enable network drive scanning
-      win_shell: Set-MpPreference -DisableScanningMappedNetworkDrivesForFullScan $false
+    - name: Disable network drive scanning
+      win_shell: Set-MpPreference -DisableScanningMappedNetworkDrivesForFullScan $true
 
     - name: Enable realtime monitoring
       win_shell: Set-MpPreference -DisableRealtimeMonitoring $false
