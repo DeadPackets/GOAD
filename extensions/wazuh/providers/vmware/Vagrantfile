@@ -6,6 +6,6 @@ boxes.append(
       :cpus => 2,
       :mem => 8000,
       :forwarded_port => [ {:guest => 22, :host => 2210, :id => "ssh"} ],
-      :disk_size => 128000
+      :disk_size => 256000
     }
 )
