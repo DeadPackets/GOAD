@@ -56,7 +56,6 @@
         - '    <location>Microsoft-Windows-Sysmon/Operational</location>'
         - '    <log_format>eventchannel</log_format>'
         - '  </localfile>'
-      notify: restart wazuh agent
 
     - name: Restart Wazuh Agent service to apply configuration changes
       win_service:
