@@ -25,7 +25,7 @@ except Exception as e:
 #  </integration>
 
 # Global vars
-debug_enabled   = True
+debug_enabled   = False
 pwd             = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 json_alert      = {}
 json_options    = {}
