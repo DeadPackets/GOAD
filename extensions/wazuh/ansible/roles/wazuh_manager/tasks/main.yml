@@ -36,8 +36,14 @@
     state: started
     enabled: yes
 
+- name: Check if SOCFORTRESS rules are already installed
+  ansible.builtin.stat:
+    path: /var/ossec/ruleset/rules/0905-cisco-ftd_rules.xml
+  register: socfortress_rules_exist
+
 - name: Run SOCFORTRESS Wazuh rules script
   shell: curl -so ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh && yes | bash ~/wazuh_socfortress_rules.sh
+  when: not socfortress_rules_exist.stat.exists
 
 - name: Extract username and password
   shell: "grep -E 'User:|Password:' /opt/wazuh/wazuh-install-output.txt | awk '{print $NF}'"
