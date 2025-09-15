@@ -54,7 +54,7 @@
     - { role: 'wazuh_agent', tags: 'wazuh_agent' }
   tasks:
     - name: Add MSDefender and Sysmon collection rules to agent ossec.conf
-      blockinfile:
+      win_blockinfile:
         path: 'C:\Program Files (x86)\ossec-agent\ossec.conf'
         insertafter: '<ossec_config>'
         block: |

@@ -11,6 +11,7 @@ collections:
   - name: community.mysql
   - name: scicore.guacamole
   - name: ansible.posix
+  - name: randrej.windows
 # - name: goad.windows
 #   type: dir
 #   source: ./collections/goad/windows
