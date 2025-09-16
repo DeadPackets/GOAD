@@ -39,6 +39,38 @@
   args:
     chdir: "{{ sysmon_install_location }}"
 
+- name: Create directory for socfortress
+  win_file:
+    path: C:\\Program Files\\socfortress
+    state: directory
+
+- name: Copy chainsaw zip file
+  win_copy:
+    src: chainsaw.zip
+    dest: C:\\Program Files\\socfortress\\chainsaw.zip
+
+- name: Unzip chainsaw
+  win_unzip:
+    src: C:\\Program Files\\socfortress\\chainsaw.zip
+    dest: C:\\Program Files\\socfortress
+    remote_src: yes
+
+- name: Create directory for sigma
+  win_file:
+    path: C:\\Program Files\\socfortress\\sigma
+    state: directory
+
+- name: Copy sigma rules
+  win_copy:
+    src: sigma_core.zip
+    dest: C:\\Program Files\\socfortress\\chainsaw\\sigma\\sigma_core.zip
+
+- name: Unzip sigma rules
+  win_unzip:
+    src: C:\\Program Files\\socfortress\\chainsaw\\sigma\\sigma_core.zip
+    dest: C:\\Program Files\\socfortress\\chainsaw\\sigma
+    remote_src: yes
+
 # RUN winlogbeat
 #- name: check winlogbeat service
 #  win_service:
