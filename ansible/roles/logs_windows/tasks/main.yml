@@ -28,19 +28,16 @@
     src: sysmonconfig-export.xml
     dest: c:\sysmon\sysmonconfig-export.xml
 
-# RUN sysmon
-- name: check sysmon service
-  win_service:
-    name: sysmon64
-  register: result
-  failed_when: result is not defined
+- name: Uninstall sysmon if already installed
+  win_command: "{{ sysmon_install_location }}\\sysmon64.exe -u"
+  args:
+    chdir: "{{ sysmon_install_location }}"
   ignore_errors: yes
 
 - name: Run sysmon
   win_command: "{{ sysmon_install_location }}\\sysmon64.exe -accepteula -i {{ sysmon_install_location }}\\sysmonconfig-export.xml"
   args:
     chdir: "{{ sysmon_install_location }}"
-  when: result.state is not defined or result.name is not defined
 
 # RUN winlogbeat
 #- name: check winlogbeat service
