@@ -58,6 +58,16 @@
         path: 'C:\Program Files (x86)\ossec-agent\ossec.conf'
         insertafter: '<ossec_config>'
         block: |
+            <!-- Chainsaw Sigma Integration -->
+            <wodle name="command">
+              <disabled>no</disabled>
+              <tag>windows_chainsaw</tag>
+              <command>Powershell.exe -executionpolicy bypass -File "C:\Program Files\socfortress\chainsaw.ps1"</command>
+              <interval>1m</interval>
+              <ignore_output>yes</ignore_output>
+              <run_on_start>yes</run_on_start>
+              <timeout>0</timeout>
+	        </wodle>
           <!-- Microsoft Defender Logs -->
           <localfile>
             <location>Microsoft-Windows-Windows Defender/Operational</location>

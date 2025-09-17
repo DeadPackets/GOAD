@@ -81,6 +81,11 @@
     path: C:\\tmp\\vc_redist.x64.exe
     arguments: /install /quiet /norestart
 
+- name: Copy chainsaw.ps1
+  win_copy:
+      src: chainsaw.ps1
+      dest: C:\\Program Files\\socfortress\\chainsaw.ps1
+
 # RUN winlogbeat
 #- name: check winlogbeat service
 #  win_service:
