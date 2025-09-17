@@ -71,6 +71,16 @@
     dest: C:\\Program Files\\socfortress\\chainsaw\\sigma
     remote_src: yes
 
+- name: Copy visual C++ redistributable
+  win_copy:
+    src: VC_redist.x64.exe
+    dest: C:\\Temp\\vc_redist.x64.exe
+
+- name: Install visual C++ redistributable
+  ansible.windows.win_package:
+    path: C:\\Temp\\vc_redist.x64.exe
+    arguments: /install /quiet /norestart
+
 # RUN winlogbeat
 #- name: check winlogbeat service
 #  win_service:
