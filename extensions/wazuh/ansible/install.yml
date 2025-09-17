@@ -8,15 +8,15 @@
   tasks:
     - name: Disable vulnerability-detection in ossec.conf
       shell:
-        sed -i '/<vulnerability-detector>/,/<\/vulnerability-detector>/d' /var/ossec/etc/ossec.conf
+        sed -i '/<vulnerability-detection>/,/<\/vulnerability-detection>/d' /var/ossec/etc/ossec.conf
     - name: Add vulnerability-detection section set to no in ossec.conf
       blockinfile:
         path: /var/ossec/etc/ossec.conf
         insertafter: '<ossec_config>'
         block: |
-            <vulnerability-detector>
+            <vulnerability-detection>
                 <enabled>no</enabled>
-            </vulnerability-detector>
+            </vulnerability-detection>
         marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
         state: present
 

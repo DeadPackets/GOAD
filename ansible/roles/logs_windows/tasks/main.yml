@@ -57,7 +57,7 @@
 
 - name: Create directory for sigma
   win_file:
-    path: C:\\Program Files\\socfortress\\sigma
+    path: C:\\Program Files\\socfortress\\chainsaw\\sigma
     state: directory
 
 - name: Copy sigma rules
