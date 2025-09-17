@@ -74,11 +74,11 @@
 - name: Copy visual C++ redistributable
   win_copy:
     src: VC_redist.x64.exe
-    dest: C:\\Temp\\vc_redist.x64.exe
+    dest: C:\\tmp\\vc_redist.x64.exe
 
 - name: Install visual C++ redistributable
   ansible.windows.win_package:
-    path: C:\\Temp\\vc_redist.x64.exe
+    path: C:\\tmp\\vc_redist.x64.exe
     arguments: /install /quiet /norestart
 
 # RUN winlogbeat
