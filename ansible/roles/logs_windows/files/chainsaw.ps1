@@ -28,8 +28,7 @@ If(!(test-path $chainsaw_output)) {
 $windows_path = "C:\Program Files\socfortress\chainsaw\sigma\rules\windows"
 
 # Run Chainsaw and store JSONs in TMP folder
-& 'C:\Program Files\socfortress\chainsaw\chainsaw.exe' hunt C:\Windows\System32\winevt -s $windows_path --mapping 'C:\Program Files\socfortress\chainsaw\mappings\sigma-event-logs-all.yml' --from $from --output $env:TMP\chainsaw_output\results.json --json --level high --skip-errors
-& 'C:\Program Files\socfortress\chainsaw\chainsaw.exe' hunt C:\Windows\System32\winevt -s $windows_path --mapping 'C:\Program Files\socfortress\chainsaw\mappings\sigma-event-logs-all.yml' --from $from --output $env:TMP\chainsaw_output\results_critical.json --json --level critical --skip-errors
+& 'C:\Program Files\socfortress\chainsaw\chainsaw.exe' hunt C:\Windows\System32\winevt -s $windows_path -s 'C:\Program Files\socfortress\chainsaw\rules' --mapping 'C:\Program Files\socfortress\chainsaw\mappings\sigma-event-logs-all.yml' --from $from --output $env:TMP\chainsaw_output\results.json --json --skip-errors
 
 # Convert JSON to new line entry for every 'group'
 function Convert-JsonToNewLine($json) {

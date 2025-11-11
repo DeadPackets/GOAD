@@ -55,6 +55,11 @@
     dest: C:\\Program Files\\socfortress
     remote_src: yes
 
+- name: Delete existing sigma directory inside chainsaw.zip
+  win_file:
+    path: C:\\Program Files\\socfortress\\chainsaw\\sigma
+    state: absent
+
 - name: Create directory for sigma
   win_file:
     path: C:\\Program Files\\socfortress\\chainsaw\\sigma
@@ -62,12 +67,12 @@
 
 - name: Copy sigma rules
   win_copy:
-    src: sigma_core.zip
-    dest: C:\\Program Files\\socfortress\\chainsaw\\sigma\\sigma_core.zip
+    src: sigma_all_rules.zip
+    dest: C:\\Program Files\\socfortress\\chainsaw\\sigma\\sigma_all_rules.zip
 
 - name: Unzip sigma rules
   win_unzip:
-    src: C:\\Program Files\\socfortress\\chainsaw\\sigma\\sigma_core.zip
+    src: C:\\Program Files\\socfortress\\chainsaw\\sigma\\sigma_all_rules.zip
     dest: C:\\Program Files\\socfortress\\chainsaw\\sigma
     remote_src: yes
 
