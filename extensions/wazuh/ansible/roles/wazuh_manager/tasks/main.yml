@@ -37,7 +37,7 @@
     enabled: yes
 
 - name: Run SOCFORTRESS Wazuh rules script
-  shell: rm -f ~/wazuh_socfortress_rules.sh && wget -q ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh && chmod +x wazuh_socfortress_rules.sh && ./wazuh_socfortress_rules.sh -y
+  shell: wget -q ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh && chmod +x wazuh_socfortress_rules.sh && sudo ./wazuh_socfortress_rules.sh -y || exit 0
 
 - name: Extract username and password
   shell: "grep -E 'User:|Password:' /opt/wazuh/wazuh-install-output.txt | awk '{print $NF}'"
