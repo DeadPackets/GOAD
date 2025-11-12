@@ -34,8 +34,24 @@
       user:
         name: kali
         shell: /usr/bin/zsh
+
+    - name: "Configure eth1 static IP"
+      template:
+        src: eth1-static.j2
+        dest: /etc/network/interfaces.d/eth1
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart networking
+
   handlers:
     - name: restart ssh
       systemd:
         name: ssh
         state: restarted
+
+    - name: restart networking
+      systemd:
+        name: networking
+        state: restarted
+
