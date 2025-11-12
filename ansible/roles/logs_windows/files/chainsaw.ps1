@@ -15,8 +15,10 @@ $ErrorActionPreference = "SilentlyContinue"
 
 # Analyse events recorded in last 1 Minutes. Convert Start Date to Timestamp
 $repo_path = "C:\Program Files\socfortress\chainsaw\sigma"
-$start_date = (Get-Date).AddMinutes(-1)
+$current_date = (Get-Date).toUniversalTime()
+$start_date = (Get-Date -Date $current_date).AddMinutes(-1)
 $from = Get-Date -Date $start_date -UFormat '+%Y-%m-%dT%H:%M:%S'
+
 
 # Create Chainsaw Output Folder if it doesn't exist
 $chainsaw_output = "$env:TMP\chainsaw_output"
@@ -28,7 +30,8 @@ If(!(test-path $chainsaw_output)) {
 $windows_path = "C:\Program Files\socfortress\chainsaw\sigma\rules\windows"
 
 # Run Chainsaw and store JSONs in TMP folder
-& 'C:\Program Files\socfortress\chainsaw\chainsaw.exe' hunt C:\Windows\System32\winevt -s $windows_path -s 'C:\Program Files\socfortress\chainsaw\rules' --mapping 'C:\Program Files\socfortress\chainsaw\mappings\sigma-event-logs-all.yml' --from $from --output $env:TMP\chainsaw_output\results.json --json --skip-errors
+echo "$from TO $to";
+& 'C:\Program Files\socfortress\chainsaw\chainsaw_x86_64-pc-windows-msvc.exe' hunt C:\Windows\System32\winevt -s $windows_path -r 'C:\Program Files\socfortress\chainsaw\rules' --mapping 'C:\Program Files\socfortress\chainsaw\mappings\sigma-event-logs-all.yml' --from "$from" --output $env:TMP\chainsaw_output\results.json --json --skip-errors
 
 # Convert JSON to new line entry for every 'group'
 function Convert-JsonToNewLine($json) {
