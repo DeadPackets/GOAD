@@ -35,23 +35,47 @@
         name: kali
         shell: /usr/bin/zsh
 
-    - name: "Configure eth1 static IP"
-      template:
-        src: eth1-static.j2
-        dest: /etc/network/interfaces.d/eth1
-        owner: root
-        group: root
-        mode: '0644'
-      notify: restart networking
+    - name: "Install uv"
+      shell: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    - name: "Install nodejs, npm and Caldera prereqs"
+      apt:
+          name:
+          - nodejs
+          - npm
+          - git
+          - zlib1g
+          - tmux
+          state: present
+          update_cache: yes
+
+    - name: "Download Caldera from git"
+      shell:
+        cd /home/kali && git clone https://github.com/mitre/caldera.git --recursive --tag 5.3.0
+
+    - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in requirements.txt"
+      replace:
+        path: /home/kali/5.3.0/requirements.txt
+        regexp: 'lxml~=4.9.0'
+        replace: 'lxml~=5.3.0'
+
+    - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in plugins/stockpile/requirements.txt"
+      replace:
+        path: /home/kali/5.3.0/plugins/stockpile/requirements.txt
+        regexp: 'lxml~=4.9.0'
+        replace: 'lxml~=5.3.0'
+
+    - name: "Install Caldera"
+      shell: |
+        cd /home/kali/5.3.0 && uv venv && uv pip install -r requirements.txt && uv pip install -r plugins/stockpile/requirements.txt
+
+    - name: "Start Caldera in a tmux session"
+      shell: |
+        cd /home/kali/5.3.0 && tmux new-session -d -s caldera 'uv run server.py --insecure --build --fresh'
 
   handlers:
     - name: restart ssh
       systemd:
         name: ssh
         state: restarted
-
-    - name: restart networking
-      systemd:
-        name: networking
-        state: restarted
-
