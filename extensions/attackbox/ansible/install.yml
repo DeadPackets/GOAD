@@ -77,13 +77,13 @@
       become: true
       become_user: kali
       shell: |
-        cd /home/kali/caldera && uv venv && uv pip install -r requirements.txt && uv pip install -r plugins/stockpile/requirements.txt
+        cd /home/kali/caldera && /home/kali/.local/bin/uv venv && /home/kali/.local/bin/uv pip install -r requirements.txt && /home/kali/.local/bin/uv pip install -r plugins/stockpile/requirements.txt
 
     - name: "Start Caldera in a tmux session"
       become: true
       become_user: kali
       shell: |
-        cd /home/kali/caldera && tmux new-session -d -s caldera 'uv run server.py --insecure --build --fresh'
+        cd /home/kali/caldera && tmux new-session -d -s caldera '/home/kali/.local/bin/uv run server.py --insecure --build --fresh'
 
   handlers:
     - name: restart ssh
