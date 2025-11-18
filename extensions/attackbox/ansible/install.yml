@@ -35,17 +35,27 @@
         name: kali
         shell: /usr/bin/zsh
 
-    - name: "Install uv, nodejs, npm and Caldera prereqs"
+    - name: "Install nodejs, npm and Caldera prereqs"
       shell: |
         DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs npm git zlib1g tmux
+
+    - name: "Install uv"
+      become: true
+      become_user: kali
+      shell: |
         curl -LsSf https://astral.sh/uv/install.sh | DEBIAN_FRONTEND=noninteractive sh
-        
+
+    - name: "Check if Caldera directory exists"
+      stat:
+        path: /home/kali/caldera
+      register: caldera_dir
 
     - name: "Download Caldera from git"
       become: true
       become_user: kali
       shell: |
         cd /home/kali && git clone --recursive --single-branch --branch 5.3.0 --depth 1 https://github.com/mitre/caldera.git
+      when: not caldera_dir.stat.exists
 
     - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in requirements.txt"
       become: true
