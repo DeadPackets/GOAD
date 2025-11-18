@@ -73,7 +73,7 @@ boxes.append(
 
         # fix ip for vmware
         if ENV['VAGRANT_DEFAULT_PROVIDER'] == "vmware_esxi"
-          target.vm.provision :shell, :path => "../../../vagrant/fix_ip.ps1", privileged: false, args: box[:ip]
+          target.vm.provision :shell, :path => "../../../vagrant/fix_ip.ps1", privileged: true, args: box[:ip]
         end
       else
         target.vm.communicator = "ssh"

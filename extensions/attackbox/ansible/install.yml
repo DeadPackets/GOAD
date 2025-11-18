@@ -45,7 +45,7 @@
       become: true
       become_user: kali
       shell:
-        cd /home/kali && git clone https://github.com/mitre/caldera.git --recursive --tag 5.3.0
+        cd /home/kali && git clone https://github.com/mitre/caldera.git --recursive --tag 5.3.0 --depth 1
 
     - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in requirements.txt"
       become: true
