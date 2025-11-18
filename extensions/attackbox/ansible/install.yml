@@ -44,14 +44,14 @@
     - name: "Download Caldera from git"
       become: true
       become_user: kali
-      shell:
-        cd /home/kali && git clone https://github.com/mitre/caldera.git --recursive --tag 5.3.0 --depth 1
+      shell: |
+        cd /home/kali && git clone --recursive --single-branch --branch 5.3.0 --depth 1 https://github.com/mitre/caldera.git
 
     - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in requirements.txt"
       become: true
       become_user: kali
       replace:
-        path: /home/kali/5.3.0/requirements.txt
+        path: /home/kali/caldera/requirements.txt
         regexp: 'lxml~=4.9.0'
         replace: 'lxml~=5.3.0'
 
@@ -59,7 +59,7 @@
       become: true
       become_user: kali
       replace:
-        path: /home/kali/5.3.0/plugins/stockpile/requirements.txt
+        path: /home/kali/caldera/plugins/stockpile/requirements.txt
         regexp: 'lxml~=4.9.0'
         replace: 'lxml~=5.3.0'
 
@@ -67,13 +67,13 @@
       become: true
       become_user: kali
       shell: |
-        cd /home/kali/5.3.0 && uv venv && uv pip install -r requirements.txt && uv pip install -r plugins/stockpile/requirements.txt
+        cd /home/kali/caldera && uv venv && uv pip install -r requirements.txt && uv pip install -r plugins/stockpile/requirements.txt
 
     - name: "Start Caldera in a tmux session"
       become: true
       become_user: kali
       shell: |
-        cd /home/kali/5.3.0 && tmux new-session -d -s caldera 'uv run server.py --insecure --build --fresh'
+        cd /home/kali/caldera && tmux new-session -d -s caldera 'uv run server.py --insecure --build --fresh'
 
   handlers:
     - name: restart ssh
