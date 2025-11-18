@@ -57,7 +57,7 @@
         cd /home/kali && git clone --recursive --single-branch --branch 5.3.0 --depth 1 https://github.com/mitre/caldera.git
       when: not caldera_dir.stat.exists
 
-    - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in requirements.txt"
+    - name: "Change 'lxml~=4.9.1' to 'lxml~=5.3.0' in requirements.txt"
       become: true
       become_user: kali
       replace:
@@ -65,13 +65,13 @@
         regexp: 'lxml\~=4\.9\.1'
         replace: 'lxml~=5.3.0'
 
-    - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in plugins/stockpile/requirements.txt"
+    - name: "Change 'donut-shellcode==1.0.2' to 'donut-shellcode==1.1' in plugins/stockpile/requirements.txt"
       become: true
       become_user: kali
       replace:
         path: /home/kali/caldera/plugins/stockpile/requirements.txt
-        regexp: 'lxml\~=4\.9\.1'
-        replace: 'lxml~=5.3.0'
+        regexp: 'donut-shellcode==1\.0\.2'
+        replace: 'donut-shellcode==1.1'
 
     - name: "Install Caldera"
       become: true
