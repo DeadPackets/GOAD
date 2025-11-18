@@ -77,6 +77,11 @@ boxes.append(
         end
       else
         target.vm.communicator = "ssh"
+
+        # Custom shell provisioning for Linux boxes
+        if box.has_key?(:shell_provision)
+          target.vm.provision :shell, :path => box[:shell_provision], privileged: false
+        end
       end
 
       if box.has_key?(:forwarded_port)

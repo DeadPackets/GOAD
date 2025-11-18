@@ -5,7 +5,8 @@ boxes.append(
       :os => "linux",
       :cpus => 2,
       :mem => 4096,
-      :forwarded_port => [ {:guest => 22, :host => 2222, :id => "ssh"} ]
+      :forwarded_port => [ {:guest => 22, :host => 2222, :id => "ssh"} ],
+      :shell_provision => "../../../vagrant/fix_kali_network.sh"
     }
 )
 
