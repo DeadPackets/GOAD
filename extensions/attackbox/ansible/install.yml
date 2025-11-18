@@ -62,7 +62,7 @@
       become_user: kali
       replace:
         path: /home/kali/caldera/requirements.txt
-        regexp: 'lxml~=4.9.0'
+        regexp: 'lxml\~=4\.9\.0'
         replace: 'lxml~=5.3.0'
 
     - name: "Change 'lxml~=4.9.0  # debrief' to 'lxml~=5.3.0  # debrief' in plugins/stockpile/requirements.txt"
@@ -70,7 +70,7 @@
       become_user: kali
       replace:
         path: /home/kali/caldera/plugins/stockpile/requirements.txt
-        regexp: 'lxml~=4.9.0'
+        regexp: 'lxml\~=4\.9\.0'
         replace: 'lxml~=5.3.0'
 
     - name: "Install Caldera"
