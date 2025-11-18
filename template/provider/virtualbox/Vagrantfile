@@ -43,9 +43,6 @@ boxes.append(
         {% endif %}
         v.memory = box[:mem]
         v.cpus = box[:cpus]
-        # Force virtio-net for better network performance
-        v.customize ["modifyvm", :id, "--nictype1", "virtio"]
-        v.customize ["modifyvm", :id, "--nictype2", "virtio"]
       end
       target.vm.box_download_insecure = box[:box]
       target.vm.box = box[:box]
