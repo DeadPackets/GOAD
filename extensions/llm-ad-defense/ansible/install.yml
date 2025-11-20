@@ -1,20 +1,28 @@
 ---
-- name: "Get Wazuh Credentials"
+- name: "Get Wazuh API Credentials"
   hosts: wazuh
   become: yes
   tasks:
-      - name: Extract username and password
-        shell: "grep -E 'User:|Password:' /opt/wazuh/wazuh-install-output.txt | awk '{print $NF}'"
-        register: access_info
+      - name: Extract wazuh-install-files.tar
+        ansible.builtin.unarchive:
+          src: /opt/wazuh/wazuh-install-files.tar
+          dest: /opt/wazuh/
+          remote_src: yes
+          creates: /opt/wazuh/wazuh-install-files/wazuh-passwords.txt
 
-      - name: "Set Wazuh credentials as facts"
-        set_fact:
-            wazuh_user: "{{ access_info.stdout_lines[0] }}"
-            wazuh_password: "{{ access_info.stdout_lines[1] }}"
+      - name: Read wazuh-passwords.txt
+        ansible.builtin.slurp:
+          src: /opt/wazuh/wazuh-install-files/wazuh-passwords.txt
+        register: wazuh_passwords_content
 
-      - name: "Display Wazuh credentials for debugging"
+      - name: Extract Wazuh API credentials
+        ansible.builtin.set_fact:
+          wazuh_api_user: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"api_username: '(wazuh)'\", '\\1') | first }}"
+          wazuh_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"# Password for wazuh API user\\s+api_username: 'wazuh'\\s+api_password: '([^']+)'\", '\\1') | first }}"
+
+      - name: "Display Wazuh API credentials for debugging"
         debug:
-            msg: "Wazuh User: {{ wazuh_user }}, Wazuh Password: {{ wazuh_password }}"
+          msg: "Wazuh API User: {{ wazuh_api_user }}, Wazuh API Password: {{ wazuh_api_password }}"
 
 # Ansible playbook for attackbox provisioning
 - name: "Setup LLM-AD-Defense Server"

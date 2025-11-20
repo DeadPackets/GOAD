@@ -61,10 +61,10 @@
 
 - name: Extract Wazuh API credentials
   ansible.builtin.set_fact:
-    wazuh_api_username: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh API user\\s+api_username:\\s+[\\'\"](\\w+)[\\'\"]', '\\1') | first }}"
-    wazuh_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh API user\\s+api_username:\\s+[\\'\"]\\w+[\\'\"]\\s+api_password:\\s+[\\'\"](.*?)[\\'\"]', '\\1') | first }}"
-    wazuh_wui_api_username: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh-wui API user\\s+api_username:\\s+[\\'\"](\\w+-?\\w+)[\\'\"]', '\\1') | first }}"
-    wazuh_wui_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh-wui API user\\s+api_username:\\s+[\\'\"]\\w+-?\\w+[\\'\"]\\s+api_password:\\s+[\\'\"](.*?)[\\'\"]', '\\1') | first }}"
+    wazuh_api_username: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"api_username: '(wazuh)'\", '\\1') | first }}"
+    wazuh_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"# Password for wazuh API user\\s+api_username: 'wazuh'\\s+api_password: '([^']+)'\", '\\1') | first }}"
+    wazuh_wui_api_username: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"api_username: '(wazuh-wui)'\", '\\1') | first }}"
+    wazuh_wui_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"# Password for wazuh-wui API user\\s+api_username: 'wazuh-wui'\\s+api_password: '([^']+)'\", '\\1') | first }}"
 
 - name: Display username and password
   debug:
