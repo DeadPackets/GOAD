@@ -10,15 +10,20 @@
           remote_src: yes
           creates: /opt/wazuh/wazuh-install-files/wazuh-passwords.txt
 
-      - name: Read wazuh-passwords.txt
-        ansible.builtin.slurp:
-          src: /opt/wazuh/wazuh-install-files/wazuh-passwords.txt
-        register: wazuh_passwords_content
+      - name: Extract Wazuh API credentials using bash
+        shell: |
+          # Extract wazuh API username and password
+          wazuh_user=$(grep -A 1 "# Password for wazuh API user" /opt/wazuh/wazuh-install-files/wazuh-passwords.txt | grep "api_username:" | awk -F"'" '{print $2}')
+          wazuh_pass=$(grep -A 2 "# Password for wazuh API user" /opt/wazuh/wazuh-install-files/wazuh-passwords.txt | grep "api_password:" | awk -F"'" '{print $2}')
+          
+          echo "$wazuh_user"
+          echo "$wazuh_pass"
+        register: wazuh_api_creds
 
-      - name: Extract Wazuh API credentials
+      - name: Set Wazuh API credentials as facts
         ansible.builtin.set_fact:
-          wazuh_api_user: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"api_username: '(wazuh)'\", '\\1') | first }}"
-          wazuh_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search(\"# Password for wazuh API user\\s+api_username: 'wazuh'\\s+api_password: '([^']+)'\", '\\1') | first }}"
+          wazuh_api_user: "{{ wazuh_api_creds.stdout_lines[0] }}"
+          wazuh_api_password: "{{ wazuh_api_creds.stdout_lines[1] }}"
 
       - name: "Display Wazuh API credentials for debugging"
         debug:
