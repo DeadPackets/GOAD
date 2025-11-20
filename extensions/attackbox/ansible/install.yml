@@ -37,7 +37,7 @@
 
     - name: "Install nodejs, npm and Caldera prereqs"
       shell: |
-        DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs npm git zlib1g tmux
+        DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs npm git zlib1g tmux golang-go
 
     - name: "Install uv"
       become: true
@@ -45,16 +45,31 @@
       shell: |
         curl -LsSf https://astral.sh/uv/install.sh | DEBIAN_FRONTEND=noninteractive sh
 
+    - name: "Copy files from ansible/files to /home/kali"
+      copy:
+        src: "{{ item }}"
+        dest: /home/kali/
+        owner: kali
+        group: kali
+        mode: '0755'
+      loop:
+        - files/attack.py
+        - files/caldera.zip
+        - files/passwords.txt
+        - files/users.txt
+
     - name: "Check if Caldera directory exists"
       stat:
         path: /home/kali/caldera
       register: caldera_dir
 
-    - name: "Download Caldera from git"
+    - name: "Extract caldera.zip"
       become: true
       become_user: kali
-      shell: |
-        cd /home/kali && git clone --recursive --single-branch --branch 5.3.0 --depth 1 https://github.com/mitre/caldera.git
+      unarchive:
+        src: /home/kali/caldera.zip
+        dest: /home/kali/
+        remote_src: yes
       when: not caldera_dir.stat.exists
 
     - name: "Change 'lxml~=4.9.1' to 'lxml~=5.3.0' in requirements.txt"
@@ -76,8 +91,12 @@
     - name: "Install Caldera"
       become: true
       become_user: kali
+      chdir: /home/kali/caldera
       shell: |
-        cd /home/kali/caldera && /home/kali/.local/bin/uv venv && /home/kali/.local/bin/uv pip install -r requirements.txt && /home/kali/.local/bin/uv pip install -r plugins/stockpile/requirements.txt
+        /home/kali/.local/bin/uv venv
+        /home/kali/.local/bin/uv pip install -r requirements.txt
+        /home/kali/.local/bin/uv pip install -r plugins/stockpile/requirements.txt
+        /home/kali/.local/bin/uv pip install -r plugins/builder/requirements.txt
 
     - name: "Start Caldera in a tmux session"
       become: true

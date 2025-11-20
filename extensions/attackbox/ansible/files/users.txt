@@ -1,0 +1,5 @@
+tywin.lannister
+cersei.lannister
+tyron.lannister
+renly.baratheon
+jaime.lannister

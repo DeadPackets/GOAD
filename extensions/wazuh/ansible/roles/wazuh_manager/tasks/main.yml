@@ -20,7 +20,8 @@
   when: not ansible_facts.services['wazuh-manager.service'] is defined
 
 - name: Run Wazuh installation script
-  shell: sudo bash /opt/wazuh/wazuh-install.sh -a -i > /opt/wazuh/wazuh-install-output.txt
+  shell: |
+    sudo bash /opt/wazuh/wazuh-install.sh -a -i > /opt/wazuh/wazuh-install-output.txt
   when: not ansible_facts.services['wazuh-manager.service'] is defined
 
 # FIX false positive on  /bin/diff  cf. https://github.com/wazuh/wazuh/issues/19000
@@ -37,7 +38,8 @@
     enabled: yes
 
 - name: Run SOCFORTRESS Wazuh rules script
-  shell: wget -q ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh && chmod +x wazuh_socfortress_rules.sh && sudo ./wazuh_socfortress_rules.sh -y || exit 0
+  shell: |
+    wget -q ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh && sudo chmod +x wazuh_socfortress_rules.sh && sudo bash -c "./wazuh_socfortress_rules.sh -y" || exit 0
 
 - name: Extract username and password
   shell: "grep -E 'User:|Password:' /opt/wazuh/wazuh-install-output.txt | awk '{print $NF}'"
