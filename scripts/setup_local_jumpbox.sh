@@ -64,7 +64,6 @@ then
 else
     cd $GOAD_REPO
     git pull
-    git lfs pull
 fi
 
 # Install ansible and pywinrm
