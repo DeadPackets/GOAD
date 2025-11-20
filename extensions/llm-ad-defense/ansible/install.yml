@@ -74,8 +74,8 @@
       copy:
         dest: /home/ubuntu/LLM-AD-Defense/.env
         content: |
-          WAZUH_USER={{ hostvars['wazuh']['wazuh_user'] }}
-          WAZUH_PASS={{ hostvars['wazuh']['wazuh_password'] }}
+          WAZUH_USER={{ hostvars['wazuh']['wazuh_api_user'] }}
+          WAZUH_PASS={{ hostvars['wazuh']['wazuh_api_password'] }}
           OPENROUTER_API_KEY={{ 'c2stb3ItdjEtZDg4NGRhYjU5OWY1MTU1MzRjYmUyZWZjMGU0ZWYzNDRjMmQ4NmI5YzA2NTE3OWYyMjYzZDVlYTg4OWRhYmU2Yg==' | ansible.builtin.b64decode }}
 
     - name: "Build and run LLM-AD-Defense Docker container"

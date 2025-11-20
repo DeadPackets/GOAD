@@ -39,14 +39,44 @@
 
 - name: Run SOCFORTRESS Wazuh rules script
   shell: |
-    wget -q ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh && sudo chmod +x wazuh_socfortress_rules.sh && sudo bash -c "./wazuh_socfortress_rules.sh -y" || exit 0
+    wget -q ~/wazuh_socfortress_rules.sh https://raw.githubusercontent.com/socfortress/Wazuh-Rules/main/wazuh_socfortress_rules.sh
+    sudo chmod +x wazuh_socfortress_rules.sh
+    yes | sudo bash ./wazuh_socfortress_rules.sh
 
 - name: Extract username and password
   shell: "grep -E 'User:|Password:' /opt/wazuh/wazuh-install-output.txt | awk '{print $NF}'"
   register: access_info
+
+- name: Extract wazuh-install-files.tar
+  ansible.builtin.unarchive:
+    src: /opt/wazuh/wazuh-install-files.tar
+    dest: /opt/wazuh/
+    remote_src: yes
+    creates: /opt/wazuh/wazuh-install-files/wazuh-passwords.txt
+
+- name: Read wazuh-passwords.txt
+  ansible.builtin.slurp:
+    src: /opt/wazuh/wazuh-install-files/wazuh-passwords.txt
+  register: wazuh_passwords_content
+
+- name: Extract Wazuh API credentials
+  ansible.builtin.set_fact:
+    wazuh_api_username: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh API user\\s+api_username:\\s+[\\'\"](\\w+)[\\'\"]', '\\1') | first }}"
+    wazuh_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh API user\\s+api_username:\\s+[\\'\"]\\w+[\\'\"]\\s+api_password:\\s+[\\'\"](.*?)[\\'\"]', '\\1') | first }}"
+    wazuh_wui_api_username: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh-wui API user\\s+api_username:\\s+[\\'\"](\\w+-?\\w+)[\\'\"]', '\\1') | first }}"
+    wazuh_wui_api_password: "{{ wazuh_passwords_content.content | b64decode | regex_search('# Password for wazuh-wui API user\\s+api_username:\\s+[\\'\"]\\w+-?\\w+[\\'\"]\\s+api_password:\\s+[\\'\"](.*?)[\\'\"]', '\\1') | first }}"
 
 - name: Display username and password
   debug:
     msg:
       - "Username: {{ access_info.stdout_lines[0] }}"
       - "Password: {{ access_info.stdout_lines[1] }}"
+
+- name: Display Wazuh API credentials
+  debug:
+    msg:
+      - "Wazuh API Username: {{ wazuh_api_username }}"
+      - "Wazuh API Password: {{ wazuh_api_password }}"
+      - "Wazuh-WUI API Username: {{ wazuh_wui_api_username }}"
+      - "Wazuh-WUI API Password: {{ wazuh_wui_api_password }}"
+
