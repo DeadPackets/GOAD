@@ -91,8 +91,8 @@
     - name: "Install Caldera"
       become: true
       become_user: kali
-      chdir: /home/kali/caldera
       shell: |
+        cd /home/kali/caldera
         /home/kali/.local/bin/uv venv
         /home/kali/.local/bin/uv pip install -r requirements.txt
         /home/kali/.local/bin/uv pip install -r plugins/stockpile/requirements.txt
