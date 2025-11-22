@@ -102,7 +102,7 @@
       become: true
       become_user: kali
       shell: |
-        cd /home/kali/caldera && tmux new-session -d -s caldera '/home/kali/.local/bin/uv run server.py --insecure --build --fresh'
+        cd /home/kali/caldera && tmux new-session -d -s caldera '/home/kali/.local/bin/uv run server.py --insecure'
 
   handlers:
     - name: restart ssh
