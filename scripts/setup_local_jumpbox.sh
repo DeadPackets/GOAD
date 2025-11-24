@@ -59,7 +59,7 @@ then
     cd $GOAD_REPO
     git checkout llm-ad-defense
     git submodule init
-    git submodule update --init --recursive
+    git submodule update --remote --recursive
     # git checkout -b v3-beta origin/v3-beta
 else
     cd $GOAD_REPO
