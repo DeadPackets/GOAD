@@ -63,7 +63,7 @@ def run_command(command: str) -> Tuple[bool, str]:
     """Run a shell command, wait for it to complete, and return the output."""
 
     if not BYPASS_WAIT:
-        sleep_time = round(len(command) * 0.5) + (os.urandom(1)[0] % 3)
+        sleep_time = round(len(command) * 0.02) + (os.urandom(1)[0] % 3)
         log(f"{Fore.MAGENTA}⏱️  [*] Throttling for {sleep_time}s...{Style.RESET_ALL}")
         time.sleep(sleep_time)
 
