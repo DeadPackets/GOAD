@@ -63,7 +63,7 @@ def run_command(command: str) -> Tuple[bool, str]:
     """Run a shell command, wait for it to complete, and return the output."""
 
     if not BYPASS_WAIT:
-        sleep_time = round(len(command) * 0.02) + (os.urandom(1)[0] % 3)
+        sleep_time = round(len(command) * 0.1) + (os.urandom(1)[0] % 3)
         log(f"{Fore.MAGENTA}⏱️  [*] Throttling for {sleep_time}s...{Style.RESET_ALL}")
         time.sleep(sleep_time)
 
@@ -284,8 +284,8 @@ log(f"{Fore.CYAN}   └─ Sleep Max: 30 seconds{Style.RESET_ALL}\n")
 
 try:
     agent_config = {
-        "sleep_min": 10,
-        "sleep_max": 30
+        "sleep_min": 30,
+        "sleep_max": 60
     }
     beacon_response = s.patch(f"{CALDERA_URL}/api/v2/agents/{agent_paw}", json=agent_config)
     beacon_response.raise_for_status()
