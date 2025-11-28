@@ -63,7 +63,7 @@
             <disabled>no</disabled>
             <tag>windows_chainsaw</tag>
             <command>powershell.exe -executionpolicy bypass -File "C:\Program Files\socfortress\chainsaw.ps1"</command>
-            <interval>1m</interval>
+            <interval>30s</interval>
             <ignore_output>yes</ignore_output>
             <run_on_start>yes</run_on_start>
             <timeout>0</timeout>
