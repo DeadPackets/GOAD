@@ -315,7 +315,7 @@ operation_payload = {
     },
     "obfuscator": "plain-text",
     "autonomous": 1,
-    "auto_close": True,
+    "auto_close": False,
     "state": "running",
     "jitter": "2/8"
 }
